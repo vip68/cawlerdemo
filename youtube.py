@@ -7,6 +7,7 @@ Topic   : YouTube接口数据抓取
             https://studio.youtube.com/channel/UCHN9P-CQVBQ1ba8o1NQJVCA/videos/upload
 """
 
+import time
 import json
 import requests
 
@@ -228,12 +229,21 @@ def get_data(resp_data):
     videos = resp_data.get('videos')
 
     for video in videos:
+        created_seconds = int(video.get('timeCreatedSeconds', 0))
+        created_date = '-' if created_seconds == 0 else time.strftime('%Y-%m-%d', time.localtime(created_seconds))
+
+        published_seconds = int(video.get('timePublishedSeconds', 0))
+        published_date = '-' if published_seconds == 0 else time.strftime('%Y-%m-%d', time.localtime(published_seconds))
+
         metrics = video.get('metrics', {})
         all_count = int(metrics.get('likeCount', 0)) + int(metrics.get('dislikeCount', 0))
         ratio = (int(metrics.get('likeCount', 0)) / all_count) if all_count > 0 else 0
 
         data_dict = {
+            'videoId': video.get('videoId', ''),
             'title': video.get('title', ''),
+            'created': created_date,
+            'published': published_date,
             'viewCount': int(metrics.get('viewCount', 0)),
             'commentCount': int(metrics.get('commentCount', 0)),
             'likeCount': int(metrics.get('likeCount', 0)),
