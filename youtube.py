@@ -12,10 +12,12 @@ import json
 import requests
 
 
-def get_api_response(proxies):
+def get_api_response(proxies=None, page_size=100, page_token=None):
     """
     获取接口响应
     :param proxies:
+    :param page_size:
+    :param page_token:
     :return:
     """
     cookies = {
@@ -81,7 +83,7 @@ def get_api_response(proxies):
             },
         },
         'order': 'VIDEO_ORDER_DISPLAY_TIME_DESC',
-        'pageSize': 30,
+        'pageSize': page_size,
         'mask': {
             'channelId': True,
             'videoId': True,
@@ -213,10 +215,41 @@ def get_api_response(proxies):
         },
     }
 
+    if page_token:
+        json_data.update(pageToken=page_token)
+
     response = requests.post('https://studio.youtube.com/youtubei/v1/creator/list_creator_videos',
                              params=params, cookies=cookies, headers=headers, json=json_data, proxies=proxies)
 
     return response
+
+
+def get_api_data(proxies):
+    """
+    获取接口数据
+    :param proxies:
+    :return:
+    """
+    resp = get_api_response(proxies)
+    resp_data = resp.json()
+    page_token = resp_data.get('nextPageToken')
+    data_list = get_data(resp_data)
+
+    page = 1
+
+    while page_token:
+        time.sleep(1)
+        page += 1
+        print('当前页面：%d' % page)
+
+        resp = get_api_response(proxies, page_token=page_token)
+        resp_data = resp.json()
+        page_token = resp_data.get('nextPageToken')
+        data_list.extend(get_data(resp_data))
+
+    print('共 %d 条数据' % len(data_list))
+
+    return data_list
 
 
 def get_data(resp_data):
@@ -256,9 +289,9 @@ def get_data(resp_data):
 
 
 if __name__ == '__main__':
-    resp = get_api_response({'https': 'http://127.0.0.1:11832'})
+    proxies = {'https': 'http://127.0.0.1:11832'}
 
-    data_list = get_data(resp.json())
+    data_list = get_api_data(proxies)
 
     with open('youtube_result.json', 'w', encoding='utf-8') as f:
         json.dump(data_list, f)
