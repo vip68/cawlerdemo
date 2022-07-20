@@ -8,18 +8,19 @@ Topic   : YouTube接口数据抓取
 """
 
 import time
-import json
 import requests
+from pandas import DataFrame
 
 
 def get_api_response(proxies=None, page_size=100, page_token=None):
     """
     获取接口响应
-    :param proxies:
-    :param page_size:
-    :param page_token:
+    :param proxies: 代理
+    :param page_size: 页面大小
+    :param page_token: pageToken
     :return:
     """
+    # 这里的cookies仅作为演示，请自行抓取替换
     cookies = {
         'PREF': 'tz=Asia.Shanghai',
     }
@@ -83,6 +84,7 @@ def get_api_response(proxies=None, page_size=100, page_token=None):
             },
         },
         'order': 'VIDEO_ORDER_DISPLAY_TIME_DESC',
+        # 通过测试，可以推导出页面大小上限为100，超出也只返回100条记录
         'pageSize': page_size,
         'mask': {
             'channelId': True,
@@ -215,6 +217,7 @@ def get_api_response(proxies=None, page_size=100, page_token=None):
         },
     }
 
+    # 第一次请求不含 pageToken 参数
     if page_token:
         json_data.update(pageToken=page_token)
 
@@ -227,7 +230,7 @@ def get_api_response(proxies=None, page_size=100, page_token=None):
 def get_api_data(proxies):
     """
     获取接口数据
-    :param proxies:
+    :param proxies: 代理
     :return:
     """
     resp = get_api_response(proxies)
@@ -255,7 +258,7 @@ def get_api_data(proxies):
 def get_data(resp_data):
     """
     获取数据
-    :param resp_data:
+    :param resp_data: 响应数据
     :return:
     """
     data_list = []
@@ -273,19 +276,65 @@ def get_data(resp_data):
         ratio = (int(metrics.get('likeCount', 0)) / all_count) if all_count > 0 else 0
 
         data_dict = {
-            'videoId': video.get('videoId', ''),
-            'title': video.get('title', ''),
-            'created': created_date,
-            'published': published_date,
-            'viewCount': int(metrics.get('viewCount', 0)),
-            'commentCount': int(metrics.get('commentCount', 0)),
-            'likeCount': int(metrics.get('likeCount', 0)),
-            'dislikeCount': int(metrics.get('dislikeCount', 0)),
-            'ratio': ratio,
+            '视频ID': video.get('videoId', ''),
+            '标题': video.get('title', ''),
+            '创建日期': created_date,
+            '发布日期': published_date,
+            '观看次数': int(metrics.get('viewCount', 0)),
+            '评论数': int(metrics.get('commentCount', 0)),
+            '顶': int(metrics.get('likeCount', 0)),
+            '踩': int(metrics.get('dislikeCount', 0)),
+            '顶和踩的比率': ratio,
         }
         data_list.append(data_dict)
 
     return data_list
+
+
+def output_excel(data_list):
+    """
+    导出到Excel
+    :param data_list: 数据列表
+    :return:
+    """
+    data_dict = {
+        '视频ID': [],
+        '标题': [],
+        '创建日期': [],
+        '发布日期': [],
+        '观看次数': [],
+        '评论数': [],
+        '顶': [],
+        '踩': [],
+        '顶和踩的比率': [],
+    }
+
+    index = 0
+    index_dict = {
+        '序号': []
+    }
+
+    # 通过循环来获取响应数据，并添加到字典中
+    for line in data_list:
+        index += 1
+        index_dict['序号'].append(index)
+        data_dict['视频ID'].append(line['视频ID'])
+        data_dict['标题'].append(line['标题'])
+        data_dict['创建日期'].append(line['创建日期'])
+        data_dict['发布日期'].append(line['发布日期'])
+        data_dict['观看次数'].append(line['观看次数'])
+        data_dict['评论数'].append(line['评论数'])
+        data_dict['顶'].append(line['顶'])
+        data_dict['踩'].append(line['踩'])
+        data_dict['顶和踩的比率'].append(line['顶和踩的比率'])
+
+    print('正在写入Excel，请稍候......')
+
+    filename = 'YouTube抓取结果-%s.xlsx' % time.strftime('%Y%m%d%H%M%S')
+    dataForm = DataFrame(data_dict, index=index_dict['序号'])
+    dataForm.to_excel(filename)
+
+    print('导出成功，文件名：%s' % filename)
 
 
 if __name__ == '__main__':
@@ -293,5 +342,4 @@ if __name__ == '__main__':
 
     data_list = get_api_data(proxies)
 
-    with open('youtube_result.json', 'w', encoding='utf-8') as f:
-        json.dump(data_list, f)
+    output_excel(data_list)
