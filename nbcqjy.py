@@ -66,9 +66,9 @@ def get_captcha():
 def login(username, password, validate_code):
     """
     模拟登录
-    :param username:
-    :param password:
-    :param validate_code:
+    :param username: 用户名
+    :param password: 密码
+    :param validate_code: 验证码
     :return:
     """
     # 由于采用全局session，所以这里cookies不用带入
@@ -102,9 +102,16 @@ def login(username, password, validate_code):
 
 
 if __name__ == '__main__':
+    # 初始化登录
     init_login()
+
+    # 获取验证码
     resp_captcha = get_captcha()
+
+    # 下载验证码
     captcha_path = download_captcha('nbcqjy.jpg', resp_captcha.content)
+
+    # 识别验证码
     code = identify_code(captcha_path)
 
     if not code:

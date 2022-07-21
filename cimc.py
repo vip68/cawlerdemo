@@ -36,7 +36,7 @@ def init_index():
 
 def second_index():
     """
-    初始化请求第二部
+    初始化请求第二步
     :return:
     """
     # 由于采用全局session，所以这里cookies不用带入
@@ -68,10 +68,10 @@ def second_index():
 def login(username, password, vcode, srccode):
     """
     模拟登录
-    :param username:
-    :param password:
-    :param vcode:
-    :param srccode:
+    :param username: 用户名
+    :param password: 密码
+    :param vcode: 验证码
+    :param srccode: 校验码
     :return:
     """
     headers = {
@@ -106,8 +106,15 @@ def login(username, password, vcode, srccode):
 
 
 if __name__ == '__main__':
-    init_index()
-    second_index()
+    ########## 初始化这两步可以省略 ##########
+    # # 初始化请求
+    # init_index()
+    #
+    # # 初始化请求第二步
+    # second_index()
+    ########## 初始化这两步可以省略 ##########
+
+    # 模拟登录
     resp = login('test', 'A@cca123456', 'dddd', 'dddd')
 
     if resp.text == '1':

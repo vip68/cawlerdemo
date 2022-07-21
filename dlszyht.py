@@ -43,6 +43,8 @@ def get_captcha():
 def login(username, password, validate_code):
     """
     模拟登录
+    :param username:
+    :param password:
     :param validate_code:
     :return:
     """
@@ -84,8 +86,13 @@ def login(username, password, validate_code):
 
 
 if __name__ == '__main__':
+    # 获取验证码
     resp_captcha = get_captcha()
+
+    # 下载验证码
     captcha_path = download_captcha('dlszyht.jpg', resp_captcha.content)
+
+    # 识别验证码
     code = identify_code(captcha_path)
 
     if not code:
