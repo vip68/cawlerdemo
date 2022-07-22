@@ -22,22 +22,7 @@ def get_api_response(proxies=None, page_size=100, page_token=None):
     """
     # 这里的cookies仅作为演示，请自行抓取替换
     cookies = {
-        'VISITOR_INFO1_LIVE': 'XVQQcvU0cH0',
-        'PREF': 'tz=Asia.Shanghai',
-        'HSID': 'A9YlBgCn4XkDjPu4A',
-        'SSID': 'ASjhAu0LqJsqg_mLD',
-        'APISID': 'Ce5qLjduUNknBrt3/AjkRtMvIjFFCqCi5Z',
-        'SAPISID': 'Y2j6Ih6cT1J_W-vG/AkSuIV68F2xZbvAUO',
-        '__Secure-1PAPISID': 'Y2j6Ih6cT1J_W-vG/AkSuIV68F2xZbvAUO',
-        '__Secure-3PAPISID': 'Y2j6Ih6cT1J_W-vG/AkSuIV68F2xZbvAUO',
-        'LOGIN_INFO': 'AFmmF2swRQIgQpfHC7dN02JdH4jk0gvdJdtlCQEZotuwJ73ATUefYOUCIQDJQJPeDU8B4RZZjeY46t8W6dPLF_hw_juMBejwJMVdFg:QUQ3MjNmektSTkR1cnVqQ2ZDaGJxMnc5aDNTblJGMks2LUVNaWgycmwyc3BPQkxNeEF6NjNjTm05T1VDQXl0SHg0aEhKS3IzZUZsOW5rTk0wMGw1RzRPMWJjbmw2UkpYZ1BCQlVWZzBzam0zTE9lR2FaT0hPa2kwcVQwSDRkbDVKdjZORTllZzlWb1RtSjBwalhQVmlCTS1iNGM1NzZfek1R',
-        'SID': 'MQj4XLPTjO1LTLsKzPiQ2RMfzBFJnChza7iWtX6lUnvRigD2Wxq06PXSpyHBiLcDOwIrAw.',
-        '__Secure-1PSID': 'MQj4XLPTjO1LTLsKzPiQ2RMfzBFJnChza7iWtX6lUnvRigD29oaJz1ME4iy53gvbWBDqsQ.',
-        '__Secure-3PSID': 'MQj4XLPTjO1LTLsKzPiQ2RMfzBFJnChza7iWtX6lUnvRigD23Us_EwAMcdaT8cg8OhVAEw.',
-        'YSC': '7opIeO6pK-c',
-        'SIDCC': 'AJi4QfGsmbczTRbUXCYpeoLUQEOZQ4KbD5NX8iIz1lVJsIlJ1HK38-OqO_9FxrZvApJStOI-dzw',
-        '__Secure-1PSIDCC': 'AJi4QfFecfT92J2W2QV9zW3-cFQgKuFW4kV3klBONc1qbldnW2B34nzWH0Is6qYMMqxUe0MtbFw',
-        '__Secure-3PSIDCC': 'AJi4QfEcjOkyXIF5Titxpu9Ke5DaPC3kqi6XwH7GwD54oZXVO8ZUqmvtYYmrtVjVY0YuKGHG65k',
+
     }
 
     headers = {
